@@ -1,0 +1,30 @@
+name: deploy-ssot-viewer
+on:
+  push: { branches: [main], paths: ['ssot/**', '.github/workflows/deploy.yml'] }
+  workflow_dispatch:
+permissions: { contents: write }
+concurrency: { group: pages, cancel-in-progress: true }
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { path: data }
+      - uses: actions/checkout@v4
+        with: { repository: ssot-studio/ssot-web, path: web }
+      - uses: pnpm/action-setup@v4
+        with: { version: 10 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: pnpm, cache-dependency-path: web/pnpm-lock.yaml }
+      - run: pnpm -C web install --frozen-lockfile
+      - run: |
+          pnpm -C web --filter @repo/ui build
+          pnpm -C web --filter web exec vite build
+      - run: |
+          DIST=web/apps/web/dist
+          rm -rf "$DIST/ssot"; mkdir -p "$DIST/ssot"
+          cp -R data/ssot/. "$DIST/ssot/"
+          rm -f "$DIST/ssot/_gaps.md" "$DIST/ssot/_coverage.md" "$DIST/ssot/_lifecycle.md"
+          cp "$DIST/index.html" "$DIST/404.html"
+      - uses: peaceiris/actions-gh-pages@v4
+        with: { github_token: "${{ secrets.GITHUB_TOKEN }}", publish_dir: web/apps/web/dist, publish_branch: gh-pages, force_orphan: true }
