@@ -1,0 +1,56 @@
+---
+id: endpoint.projects-enable
+kind: Endpoint
+title: "POST /projects/:id/enable"
+definition: 비활성화된 프로젝트를 다시 활성화하여 훅 강제를 재개한다.
+realizedBy: []
+implementedIn:
+  - "sdi-plugin/crates/daemon/src/router/project.rs"
+relatesTo:
+  - to: concept.project
+    type: mutates
+    note: "프로젝트의 enabled 필드를 true로 변경한다"
+governedBy: []
+impacts: []
+consumedBy: []
+owner: TBD
+lifecycle: active
+confidence: inferred
+lastVerified: ""
+---
+
+## 정의
+
+이전에 비활성화된 프로젝트를 다시 활성화 상태로 전환하는 엔드포인트다. 활성화가 완료되면 해당 프로젝트의 작업 디렉토리에서 플러그인 훅의 SDI 게이트 검사가 즉시 재개된다. `POST /projects/:id/disable`로 일시 중단된 상태를 원복할 때 사용한다.
+
+## 요청 / 응답
+
+**요청**
+
+- 메서드: POST
+- 경로: `/projects/:id/enable`
+- 경로 파라미터:
+  - `id` (필수): 활성화할 프로젝트의 고유 식별자
+- 요청 본문: 없음
+
+**응답**
+
+- 성공: 업데이트된 프로젝트 레코드(enabled=true 포함)를 JSON으로 반환하거나, 성공을 나타내는 빈 응답을 반환한다.
+- 존재하지 않는 프로젝트 id일 경우 404를 반환한다.
+
+## 권한 / 제약
+
+- 인증이 필요하지 않다. 데몬 소켓에 접근 가능한 로컬 프로세스만 호출할 수 있다.
+- 이미 활성화된 프로젝트에 대해 다시 호출해도 오류 없이 처리된다(멱등성 여부는 미확정).
+- 훅 강제 재개가 즉시 적용되는지, 아니면 다음 훅 실행 시점에 반영되는지는 미확정이다.
+
+## provenance
+
+- 라우터 파일: `sdi-plugin/crates/daemon/src/router/project.rs`
+- 이 엔드포인트의 존재와 동작은 코드 탐색 없이 설계 문서 기반으로 추론되었으므로 confidence가 inferred다.
+
+## 미확정 (OPEN)
+
+- 활성화 시 SSE(서버 전송 이벤트)를 통해 상태 변경을 알리는지 미확정이다.
+- 멱등성 보장 여부(이미 enabled인 프로젝트에 재호출 시 응답)가 미확정이다.
+- 비활성화 기간 중 발생한 작업(커밋, 태스크 상태 변경 등)에 대한 소급 처리 방식이 미확정이다.
