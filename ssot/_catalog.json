@@ -1,0 +1,44 @@
+{
+  "generatedFrom": "./ssot",
+  "nodeCount": 1,
+  "edgeCount": 0,
+  "nodes": [
+    {
+      "id": "platform.sdi",
+      "kind": "Platform",
+      "title": "Scenario-Driven Implementation (SDI)",
+      "file": "platform.md",
+      "confidence": "unverified",
+      "owner": "TBD",
+      "lifecycle": "active",
+      "lastVerified": "",
+      "tags": [],
+      "introducedIn": "",
+      "targetVersion": "",
+      "openCount": 3,
+      "sections": [
+        "무엇인가",
+        "누구를 위한 것인가",
+        "서비스 영역",
+        "접근 매트릭스 (역할 → 서비스)",
+        "기술 스택 (제품 맥락)",
+        "미확정 (OPEN)"
+      ],
+      "facets": {
+        "id": "platform.sdi",
+        "kind": "Platform",
+        "title": "Scenario-Driven Implementation (SDI)",
+        "purpose": "",
+        "servesPersona": [],
+        "value": "",
+        "owner": "TBD",
+        "lifecycle": "active",
+        "confidence": "unverified",
+        "lastVerified": ""
+      }
+    }
+  ],
+  "edges": [],
+  "paths": [],
+  "parseErrors": []
+}
